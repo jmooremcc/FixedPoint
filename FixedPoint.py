@@ -1,11 +1,13 @@
 #FixedPoint Math Module
 # by jmooremcc
 
-__VERSION__ = 1.0
+__VERSION__ = 1.1
 
 class FixedPoint:
-    def __init__(self, value):
-        if type(value) == float:
+    def __init__(self, value, FPV=False):
+        if FPV:
+            self._value = int((value*100)/100)
+        elif type(value) == float:
             self._value = int(value * 100)
         elif type(value) == int:
             self._value = value * 100
@@ -18,42 +20,42 @@ class FixedPoint:
 
     def __add__(self, other):
         if type(other) == FixedPoint:
-            return FixedPoint(self.value + other.value)
+            return FixedPoint(self._value + other._value, True)
         else:
             return FixedPoint(self.value + other)
 
     def __iadd__(self, other):
-        self._value = self.__add__(other)._value
+        self._value = (self.__add__(other))._value
         return self
 
     def __sub__(self, other):
         if type(other) == FixedPoint:
-            return FixedPoint(self.value - other.value)
+            return FixedPoint(self._value - other._value, True)
         else:
-            return FixedPoint(self._value - other)
+            return FixedPoint(self.value - other)
 
     def __isub__(self, other):
-        self._value = self.__sub__(other)._value
+        self._value = (self.__sub__(other))._value
         return self
 
     def __mul__(self, other):
         if type(other) == FixedPoint:
-            return FixedPoint(self.value * other.value)
+            return FixedPoint(self._value * other._value/100, True)
         else:
             return FixedPoint(self.value * other)
 
     def __imul__(self, other):
-        self._value = self.__mul__(other)._value
+        self._value = (self.__mul__(other))._value
         return self
 
     def __truediv__(self, other):
         if type(other) == FixedPoint:
             return FixedPoint(self._value / other._value)
         else:
-            return FixedPoint(self._value / other)
+            return FixedPoint(self.value / other)
 
     def __itruediv__(self, other):
-        self._value = self.__truediv__(other)._value
+        self._value = (self.__truediv__(other))._value
         return self
 
     def __eq__(self, other):
@@ -88,19 +90,22 @@ if __name__ == "__main__":
     print(f"{total}  {type(total)}")
 
     total = qty * price
-    print(total)
+    print(f"{total=}")
 
     sum = qty + price
-    print(sum)
+    print(f"{sum=}")
+
+    qty *= qty
+    print(f"{qty=}")
 
     qty += price
-    print(qty)
+    print(f"{qty=}")
 
     qty -= price
-    print(qty)
+    print(f"{qty=}")
 
     value = qty / FixedPoint(3)
-    print(value)
+    print(f"{value=}")
 
     print(FixedPoint(0.1) + FixedPoint(0.1) + FixedPoint(0.1))
 
