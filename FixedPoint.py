@@ -1,9 +1,8 @@
 #FixedPoint Math Module
 # by jmooremcc
 
-from fractions import Fraction
 
-__VERSION__ = 1.2
+__VERSION__ = 1.3
 """
 FixedPoint Module
 Performs fixed point arithmetic suitable for Currency operations
@@ -26,9 +25,15 @@ Change Log
         Also added Fractions and other methods that allow the module to work with sum and mean functions
         when FixedPoint objects are used in a list
     
+    Version 1.3:
+        More refinements to support statistical ops with lists.
+        Fixed bug that involved a mixed type liat including FixedPoints
 """
 
-class FixedPoint:
+class FixedPoint(float):
+    def __new__(cls, value, FPV=False):
+        return super().__new__(cls, value)
+
     def __init__(self, value, FPV=False):
         if FPV:
             self._value = int((value*100)/100)
@@ -41,7 +46,6 @@ class FixedPoint:
         else:
             self._value = int(value * 100)
 
-        self.fraction = Fraction(self.value)
 
     @property
     def value(self):
@@ -50,15 +54,6 @@ class FixedPoint:
     @value.setter
     def value(self, val):
         self._value = val
-        self.fraction = Fraction(self.value)
-
-    @property
-    def numerator(self):
-        return self.fraction.numerator
-
-    @property
-    def denominator(self):
-        return self.fraction.denominator
 
     def __add__(self, other):
         if type(other) == FixedPoint:
